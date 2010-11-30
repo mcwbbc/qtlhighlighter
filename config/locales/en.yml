@@ -1,0 +1,111 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
+en:
+  label:
+    signin: Sign In
+    update: Update
+    email: Email
+    signup: Sign Up
+    activate: Activate
+    reset: Reset Password
+    save: Save
+    cancel: Cancel
+
+  link:
+    dashboard: Dashboard
+    forgot: Forgot password
+    user: My Account
+    sign-up: Sign Up
+    new_user: New User
+    sign-in: Sign In
+    sign-out: Sign out
+    upgrade: Upgrade
+    show: Show
+    edit: Edit
+    destroy: Destroy
+
+  confirm:
+    signout: "Are you sure you want to signout?"
+    destroy: "Are you sure?"
+    areyousure: Are you sure?
+
+  flash:
+    unauthorized: You are not authorized to complete that action.
+
+    accounts:
+      create:
+        notice: 'Your account has been created. Please check your e-mail for your account activation instructions.'
+      update:
+        notice: "Account successfully updated."
+
+    users:
+      create:
+        notice: "User successfully created."
+      update:
+        notice: "User successfully updated."
+      destroy:
+        notice: "User successfully deleted."
+
+    activations:
+      create:
+        notice: "Your account has been activated."
+
+    user_sessions:
+      create:
+        notice: "Sign In successful!"
+      destroy:
+        notice: "Sign out successful!"
+
+    password_resets:
+      create:
+        notice: "Instructions to reset your password have been emailed to you. Please check your email."
+        error: "No user was found with that email address."
+      update:
+        notice: "Password successfully updated."
+        error: "Your password cannot be blank."
+
+    require_admin: "Sorry, you don't have access to that."
+    require_user: "You must be logged in to access this page."
+    require_no_user: "You must be logged out to access this page."
+
+    require_user_token: "We're sorry, but we could not locate your account. If you are having issues try copying and pasting the URL from your email into your browser or restarting the reset password process."
+
+
+  users:
+    index:
+      title: All Users
+    new:
+      title: Sign Up
+    edit:
+      title: Edit My Account
+    show:
+      title: User Dashboard
+
+  gene_searches:
+    new:
+      title: New gene search
+
+  pages:
+    home:
+      welcome: Welcome to QTL Highlighter
+    upgrade:
+      text: |
+        <div id="ie6msg">
+        <h1>Please upgrade your web browser</h1>
+        <p>QTL Highlighter works best with a newer browser than you are using.</p>
+        <p>To get the best possible experience using QTL Highlighter, we recommend that you upgrade your browser to a newer version.</p>
+        <p>The current version is <a href="http://www.microsoft.com/windows/internet-explorer/default.aspx target="_blank"">Internet Explorer 8</a>. The upgrade is free. If you’re using a PC at work you should contact your IT-administrator for assistance.</p>
+        <p>Either way, we'd like to encourage you to stop using IE6 and try a more secure and Web Standards-friendly browser like <strong><a href="http://getfirefox.com" target="_blank">Firefox</a></strong> or <strong><a href="http://www.google.com/chrome" target="_blank">Chrome</a></strong>.</p>
+        </div>
+    help:
+      title: QTL Highlighter Help
+    about:
+      title: About the QTL Highlighter
+
+  ie:
+    upgrade_message: |
+      Your browser is obsolete. For best results in gminer, please {{upgrade_page_url}}
+    outdated_browser: You are using an outdated browser
+    please_upgrade: "For a better experience using this site, please upgrade to a modern web browser."
+    browser_obsolete: Your Browser is Obsolete

@@ -1,0 +1,4 @@
+.pagination
+  .page_info
+    = page_entries_info(items)
+  = will_paginate(items, :class => (defined? klass) ? klass : "data_pagination")

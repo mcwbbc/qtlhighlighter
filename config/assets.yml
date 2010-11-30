@@ -1,0 +1,26 @@
+embed_assets: on
+javascript_compressor:  closure     # (yui, closure)
+
+javascripts:
+  common:
+    - public/javascripts/lib/modernizr.js
+    - public/javascripts/lib/webfonts.js
+    - public/javascripts/jquery/jquery.js
+    - public/javascripts/lib/tabs.js
+    - public/javascripts/jquery/cookie.js
+    - public/javascripts/jquery/jquery-ui.js
+    - public/javascripts/lib/underscore.js
+    - public/javascripts/lib/fileuploader.js
+    - public/javascripts/lib/protovis-d3.2.js
+    - public/javascripts/application.js
+  admin:
+
+stylesheets:
+  common:
+    - public/stylesheets/yui/reset.css
+    - public/stylesheets/yui/fonts.css
+    - public/stylesheets/yui/base.css
+    - public/stylesheets/utility/fileuploader.css
+    - public/stylesheets/application.css
+    - public/stylesheets/ui-lightness/jquery-ui.css
+  admin:

@@ -1,0 +1,71 @@
+- title t('.title')
+= page_title(t('.title'))
+%button.submit-search
+  Submit search
+.clear
+.search-box
+  .section-title
+    Genes
+  #tabs
+    %ul
+      %li
+        %a{:href => '#tabs-1'}
+          QTL
+      %li
+        %a{:href => '#tabs-2'}
+          File Upload
+      %li
+        %a{:href => '#tabs-3'}
+          Direct
+    #tabs-1
+      .ui-widget
+        %label{:for => 'qtl-search'}
+          Search for QTL:
+        %input#qtl-search{:size => 50}
+    .ui-widget{:style => "margin-top: 10px;"}
+    #tabs-2
+      #file-uploader
+        %noscript
+          %p
+            Please enable JavaScript to use file uploader
+            <!-- or put a simple form for upload here -->
+    #tabs-3
+      .ui-widget
+        %label{:for => 'chromosome'}
+          Chromosome
+        %input#chromosome{:size => 2}
+        %label{:for => 'starts_at'}
+          Start
+        %input#starts_at{:size => 10}
+        %label{:for => 'ends_at'}
+          End
+        %input#ends_at{:size => 10}
+      %button.submit-direct
+        Search
+  .ui-widget{:style => "margin-top: 10px;"}
+    Chromosome:
+    %span.qtl-chromosome-name
+    Starts at:
+    %span.qtl-starts-at
+    Ends at:
+    %span.qtl-ends-at
+    .clear
+    %br
+    Selected:
+    .remove
+      (remove all)
+    .selected-genes.ui-widget-content.selected
+.search-box
+  .section-title
+    Ontology Terms
+  .ui-widget
+    %label{:for => 'ontologyterm-search'}
+      Add:
+    %input#ontologyterm-search{:size => 50}
+  .ui-widget{:style => "margin-top: 10px;"}
+    Selected:
+    .remove
+      (remove all)
+    .selected-terms.ui-widget-content.selected
+.clear
+.data-table

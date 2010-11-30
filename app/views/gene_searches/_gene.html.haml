@@ -1,0 +1,2 @@
+.selected-gene{:title => gene['gene_id']}
+  = link_to(gene['gene_symbol'], "http://rgd.mcw.edu/rgdweb/search/genes.html?term=#{gene['gene_symbol']}", :target => "_blank")

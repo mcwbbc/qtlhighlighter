@@ -1,0 +1,181 @@
+.highlight {
+  font-weight: bold;
+  font-size: 110%;
+  background-color: $highlight;
+  padding: 2px; }
+
+.ui-autocomplete-loading {
+  background: white url('/stylesheets/ui-lightness/images/ui-anim_basic_16x16.gif') right center no-repeat; }
+
+ul li {
+  text-align: left;
+  list-style: none outside none; }
+
+.search-box {
+  border: 1px dashed #000;
+  width: 465px;
+  float: left;
+  padding: 5px; }
+
+.selected-terms-container {
+  font-size: 20px;
+  margin-top: 20px;
+  .ontology-name, .ontology-key {
+    float: left;
+    border: 1px solid #000;
+    padding: 5px;
+    margin: 5px 5px 5px 0px;
+    font-size: 12px; }
+  .ontology-key {
+    border: none; } }
+
+.selected-terms, .selected-genes {
+  border: 1px solid #000;
+  height: 200px;
+  overflow: auto; }
+
+.selected-term, .selected-gene {
+  font-size: 14px;
+  border: 1px solid #000;
+  margin: 2px;
+  padding: 5px;
+  float: left;
+  background: $selected_term_bg; }
+
+.selected-term a {
+  cursor: pointer; }
+
+.selected-gene {
+  background: $selected_gene_bg;
+  a {
+    cursor: pointer; }}
+
+.adult-mouse {
+  background: $adult_mouse_bg; }
+
+.biological-process {
+  background: $biological_process_bg; }
+
+.gene-ontology {
+  background: $gene_ontology_bg; }
+
+.molecular-function {
+  background: $molecular_function_bg; }
+
+.cellular-component {
+  background: $cellular_component_bg; }
+
+.cell {
+  background: $cell_bg; }
+
+.mamalian-phenotype {
+  background: $mamalian_phenotype_bg; }
+
+.submit-search {
+  border: 1px solid #000;
+  padding: 5px;
+  background: #ddd;
+  cursor: pointer;
+  margin-top: 5px; }
+
+.delete-tag-icon {
+  margin: 0px;
+  border: none;
+  width: 15px;
+  height: 15px;
+  vertical-align: -15%; }
+
+.remove {
+  display: inline;
+  color: $remove_txt;
+  font-size: 10px;
+  cursor: pointer; }
+
+.ui-tabs .ui-tabs-hide {
+  display: none; }
+
+.rounded-left {
+  -moz-border-radius-topleft: 5px;
+  -webkit-border-top-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  -webkit-border-bottom-left-radius: 5px; }
+
+.rounded-right {
+  -moz-border-radius-topright: 5px;
+  -webkit-border-top-right-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -webkit-border-bottom-right-radius: 5px; }
+
+.rounded {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px; }
+
+.help {
+  color: $help_txt;
+  background-color: $help_bg;
+  border: thin solid darken($help_bg, 30%);
+  padding: 10px; }
+
+.row-header {
+  background-color: $row_header_bg;
+  font-weight: bold; }
+
+.row-even {
+  background-color: $row_even_bg; }
+
+.row-odd {
+  background-color: $row_odd_bg; }
+
+.row-alt {
+  background-color: $row_alt_bg; }
+
+.clear {
+  clear: both; }
+
+.page-title, .section-title  {
+  font-family: $droid_mono;
+  font-size: 28px;
+  color: $page_title; }
+
+.page-title {
+  font-weight: bold; }
+
+.section-title {
+  font-size: 24px;
+  margin-bottom: 5px; }
+
+.qtl-information {
+  padding: 10px;
+  margin-bottom: 20px;
+  height: 30px;
+  font-size: 24px;
+}
+
+#qtl-chromosome-name, #qtl-starts-at, #qtl-ends-at, #qtl-symbol {
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-right: 15px;
+  background: darken($main_bg, 10%); }
+
+.qtl-search {
+  margin-top: 10px;
+  font-family: $droid_mono;
+  height: 30px;
+  font-size: 24px;
+}
+
+.term-count, .gene-count {
+  font-size: 12px;
+  display: inline; }
+
+.messages{
+  border: 1px solid #000;
+  background: #fff;
+  overflow: auto;
+  height: 150px;
+  .message {
+    margin: 5px;
+    font-size: 18px; } }
+
+.newest {
+  color: #d00; }

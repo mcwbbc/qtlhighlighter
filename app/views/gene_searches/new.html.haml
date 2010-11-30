@@ -1,0 +1,46 @@
+- title t('.title')
+.grid-container
+  .grid_24
+    = page_title(t('.title'))
+    .qtl-search
+      %label{:for => 'qtl-search'}
+        Search for QTL:
+      %input#qtl-search{:size => 10}
+    .qtl-information
+      %input#qtl-symbol{'name' => 'qtl-symbol', 'value' => 'qtl symbol', 'disabled' => 'disabled', 'size' => 10}
+      %input#qtl-chromosome-name{'name' => 'qtl-chromosome-name', 'value' => 'chromosome', 'size' => 10}
+      %input#qtl-starts-at{'name' => 'qtl-starts-at', 'value' => 'starts at', 'size' => 15}
+      %input#qtl-ends-at{'name' => 'qtl-ends-at', 'value' => 'ends at', 'size' => 15}
+    .ui-widget
+      %label{:for => 'ontologyterm-search'}
+        Add term:
+      %input#ontologyterm-search{:size => 50}
+    .selected-terms-container
+      Selected terms:
+      .remove{:format => 'term'}
+        (remove all)
+      %br
+      .ontology-key
+        ontology key
+      .ontology-name.adult-mouse
+        adult mouse
+      .ontology-name.biological-process
+        biological process
+      .ontology-name.gene-ontology
+        gene ontology
+      .ontology-name.molecular-function
+        molecular function
+      .ontology-name.cellular-component
+        cellular component
+      .ontology-name.cell
+        cell
+      .ontology-name.mamalian-phenotype
+        mamalian phenotype
+      .clear
+      .selected-terms.selected{:format => 'term'}
+    .clear
+    %button.submit-search
+      Submit search
+    .clear
+    %br
+    .data-table

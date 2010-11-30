@@ -1,0 +1,8 @@
+.navigation
+  = link_to("Home", root_url)
+  = link_to("About", about_url)
+  = link_to("Help", help_url)
+  = link_to("Gene Search", new_gene_search_url)
+  - if admin?
+    Admin!
+

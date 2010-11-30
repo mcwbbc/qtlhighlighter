@@ -1,0 +1,13 @@
+Results
+%br
+.qtl-information
+  Symbol:
+  = @qtl_symbol
+  %br
+  Location:
+  == #{@chromosome}:#{@starts_at}-#{@ends_at}
+%br
+Genes
+%br
+.selected-genes
+  = render(:partial => "gene_searches/gene.html.haml", :collection => @genes)

@@ -1,0 +1,172 @@
+get genes for term from qtl
+SELECT DISTINCT ?qtl_id ?gene_id ?gene_name ?term_id ?term_name WHERE {
+  ?qtl_id <http://purl.org/dc/elements/1.1/title> "Rf20"@en .
+  ?qtl_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Qtl> .
+  ?qtl_id <http://rgd.mcw.edu/core/Annotation> ?node .
+  ?node <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?term_id .
+  ?term_id <http://www.w3.org/2000/01/rdf-schema#label> ?term_name .
+  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> .
+  ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name .
+  ?gene_id <http://rgd.mcw.edu/core/Annotation> ?gene_annotation .
+  ?gene_annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?term_id .
+} ORDER BY ?qtl_id
+
+get terms for QTL
+SELECT DISTINCT ?qtl_id ?annotation ?term_name WHERE {
+  ?qtl_id <http://purl.org/dc/elements/1.1/title> "Rf20"@en .
+  ?qtl_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Qtl> .
+  ?qtl_id <http://rgd.mcw.edu/core/Annotation> ?node .
+  ?node <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?annotation .
+  ?annotation <http://www.w3.org/2000/01/rdf-schema#label> ?term_name
+} ORDER BY ?qtl_id
+
+get terms for range
+SELECT DISTINCT ?term_id ?term_name WHERE { ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> . ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name . ?gene_id <http://rgd.mcw.edu/core/GenomicLocation> ?location . ?location <http://rgd.mcw.edu/core/Chromosome> "2" . ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) >= 155920808) . ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) <= 210636008) . ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) <= 210636008) . ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) >= 155920808) . ?gene_id <http://rgd.mcw.edu/core/Annotation> ?annotation . ?annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?term_id . ?term_id <http://www.w3.org/2000/01/rdf-schema#label> ?term_name . } ORDER BY ?term_id
+
+query = 'SELECT DISTINCT ?term_id ?term_name WHERE { ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> . ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name . ?gene_id <http://rgd.mcw.edu/core/GenomicLocation> ?location . ?location <http://rgd.mcw.edu/core/Chromosome> "2" . ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) >= 155920808) . ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) <= 210636008) . ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) <= 210636008) . ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) >= 155920808) . ?gene_id <http://rgd.mcw.edu/core/Annotation> ?annotation . ?annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?term_id . ?term_id <http://www.w3.org/2000/01/rdf-schema#label> ?term_name . } ORDER BY ?term_id'
+
+
+SELECT ?gene_id ?gene_name ?term_id ?term_name WHERE {
+  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> .
+  ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name .
+  ?gene_id <http://rgd.mcw.edu/core/GenomicLocation> ?location .
+  ?location <http://rgd.mcw.edu/core/Chromosome> "2" .
+  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) >= 155920808) .
+  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) <= 210636008) .
+  ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) <= 210636008) .
+  ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) >= 155920808) .
+  ?gene_id <http://rgd.mcw.edu/core/Annotation> ?annotation .
+  ?annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?term_id
+  ?term_id <http://www.w3.org/2000/01/rdf-schema#label> ?term_name
+} ORDER BY ?gene_name
+
+
+find_genes_for_location
+
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?gene_id ?gene_name WHERE {
+  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> .
+  ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name .
+  ?gene_id <http://rgd.mcw.edu/core/GenomicLocation> ?location .
+  ?location <http://rgd.mcw.edu/core/Chromosome> "2" .
+  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) >= 155920808) .
+  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) <= 210636008) .
+  ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) <= 210636008) .
+  ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) >= 155920808) .
+} ORDER BY ?gene_name
+
+
+qtl_start_stop
+
+SELECT ?chromosome ?start ?stop WHERE {
+  ?qtl <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Qtl> .
+  ?qtl <http://purl.org/dc/elements/1.1/title> "Bp101"@en .
+  ?qtl <http://rgd.mcw.edu/core/GenomicLocation> ?location .
+  ?location <http://rgd.mcw.edu/core/Chromosome> ?chromosome .
+  ?location <http://rgd.mcw.edu/core/Start> ?start .
+  ?location <http://rgd.mcw.edu/core/Stop> ?stop .
+}
+
+rgd_qtl_with_location
+
+SELECT DISTINCT ?qtl_id ?chromosome ?starts_at ?stops_at WHERE {
+  ?qtl_id <http://purl.org/dc/elements/1.1/title> "Bp101"@en .
+  ?qtl_id <http://rgd.mcw.edu/core/GenomicLocation> ?location .
+  ?location <http://rgd.mcw.edu/core/Chromosome> ?chromosome .
+  ?location <http://rgd.mcw.edu/core/Start> ?starts_at .
+  ?location <http://rgd.mcw.edu/core/Stop> ?stops_at .
+} ORDER BY ?qtl_id
+
+
+find_gene_range
+
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?gene_id ?gene_name WHERE {
+  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> .
+  ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name .
+  ?gene_id <http://rgd.mcw.edu/core/GenomicLocation> ?location .
+  ?location <http://rgd.mcw.edu/core/Chromosome> "1" .
+  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) >= 126938969) .
+  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) <= 185923619) .
+  ?location <http://rgd.mcw.edu/core/Stop>  ?stop FILTER (xsd:integer(?stop) <= 185923619) .
+  ?location <http://rgd.mcw.edu/core/Stop>  ?stop FILTER (xsd:integer(?stop) >= 126938969) .
+}
+ORDER BY ?gene_name
+
+query = VIRTUOSO_SERVER.select(:gene_name).distinct(true).where([:gene_id, DC11.title, :gene_name]).where([:gene_id, RDFS.type, Constants::RGD_CORE['Gene']]).where([:gene_id, Constants::RGD_CORE['GenomicLocation'], :location]).where([:location, Constants::RGD_CORE['Chromosome'], "2"]).where([:location, Constants::RGD_CORE['Start'], "?start FILTER (xsd:integer(?start) >= 1)"]).where([:location, Constants::RGD_CORE['Start'], :start]).filter('xsd:integer(?start) <= 20000000').where([:location, Constants::RGD_CORE['Stop'], :stop]).filter('xsd:integer(?stop) <= 20000000').where([:location, Constants::RGD_CORE['Stop'], :stop]).filter('xsd:integer(?stop) >= 1').order(:gene_name)
+
+find_genes_from_range_with_annotations
+SELECT ?gene_id ?gene_name WHERE {
+  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> .
+  ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name .
+  ?gene_id <http://rgd.mcw.edu/core/GenomicLocation> ?location .
+  ?location <http://rgd.mcw.edu/core/Chromosome> "20" .
+  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) >= 29744366) .
+  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) <= 62045696) .
+  ?location <http://rgd.mcw.edu/core/Stop>  ?stop FILTER (xsd:integer(?stop) <= 62045696) .
+  ?location <http://rgd.mcw.edu/core/Stop>  ?stop FILTER (xsd:integer(?stop) >= 29744366) .
+  ?gene_id <http://rgd.mcw.edu/core/Annotation> ?annotation .
+
+  { ?annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> <http://purl.org/obo/owl/MP#MP_0005325> }
+  UNION
+  { ?annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> <http://purl.org/obo/owl/MP#MP_0001859> }
+
+}
+ORDER BY ?gene_name
+LIMIT 100
+
+
+gene_names
+
+SELECT DISTINCT ?gene_name WHERE {
+  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> .
+  ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name . }
+ORDER BY ?gene_name
+
+
+annotated_rgd_qtl_with_loc
+
+SELECT DISTINCT ?qtl_id ?qtl_name ?chromosome ?starts_at ?stops_at WHERE {
+  ?qtl_id <http://purl.org/dc/elements/1.1/title> ?qtl_name .
+  ?qtl_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Qtl> .
+  ?qtl_id <http://rgd.mcw.edu/core/Annotation> ?node .
+  ?node <http://www.geneontology.org/formats/oboInOwl#hasDbXref> <http://purl.org/obo/owl/MP#MP_0002842> .
+  ?node <http://rgd.mcw.edu/core/evidenceCode> <http://rgd.mcw.edu/core/QTM> .
+  ?qtl_id <http://rgd.mcw.edu/core/GenomicLocation> ?location .
+  ?location <http://rgd.mcw.edu/core/Chromosome> ?chromosome .
+  ?location <http://rgd.mcw.edu/core/Start> ?starts_at .
+  ?location <http://rgd.mcw.edu/core/Stop> ?stops_at .
+} ORDER BY ?qtl_id
+
+
+annotated_rgd_qtl
+
+SELECT DISTINCT ?qtl_id ?qtl_name WHERE {
+  ?qtl_id <http://purl.org/dc/elements/1.1/title> ?qtl_name .
+  ?qtl_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Qtl> .
+  ?qtl_id <http://rgd.mcw.edu/core/Annotation> ?node .
+  ?node <http://www.geneontology.org/formats/oboInOwl#hasDbXref> <http://purl.org/obo/owl/MP#MP_0002842> .
+  ?node <http://rgd.mcw.edu/core/evidenceCode> <http://rgd.mcw.edu/core/QTM> .
+} ORDER BY ?qtl_id
+
+
+annotated_rgd
+
+SELECT DISTINCT ?gene_id ?gene_name WHERE {
+  ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name .
+  ?gene_id <http://rgd.mcw.edu/core/Annotation> ?node .
+  ?node <http://www.geneontology.org/formats/oboInOwl#hasDbXref> <http://purl.org/obo/owl/MP#MP_0002842> .
+  ?node <http://rgd.mcw.edu/core/evidenceCode> <http://rgd.mcw.edu/core/QTM> .
+}
+
+
+obo_namespaces
+
+SELECT DISTINCT ?namespace WHERE { ?s <http://www.geneontology.org/formats/oboInOwl#hasOBONamespace> ?namespace }
+
+
+everything
+
+SELECT ?s ?p ?o WHERE { ?s ?p ?o }
+
+
