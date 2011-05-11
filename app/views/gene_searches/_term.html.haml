@@ -1,0 +1,5 @@
+%tr{:style => 'display: none;'}
+  %td
+  %td{:colspan => 3, :class => Constants::TERM_CSS[gene_hash['terms'][term]['ontology_name']]}
+    %span{:title => term}
+      = gene_hash['terms'][term]['name']

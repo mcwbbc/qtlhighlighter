@@ -1,0 +1,1 @@
+= render(:partial => "gene_searches/annotated_term.html.haml", :collection => gene_hash['pathways'][pathway]['genes'][annotated_gene]['terms'].keys, :locals => {:gene_hash => gene_hash, :pathway => pathway, :annotated_gene => annotated_gene})

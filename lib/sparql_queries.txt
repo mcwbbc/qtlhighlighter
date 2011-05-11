@@ -1,41 +1,132 @@
+SELECT DISTINCT ?gene_id ?gene_symbol WHERE {
+ ?gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?gene_annotation .
+ { ?gene_annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> <http://purl.org/obo/owl/MP#MP_0002842> }
+ UNION
+ { ?gene_annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> <http://purl.org/obo/owl/MA#MA_0002889> }
+ UNION
+ { ?gene_annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?subterm .
+   FILTER (
+     ?subterm IN (
+       ( SELECT DISTINCT ?x WHERE {
+          { SELECT ?x ?y WHERE { ?x rdfs:subClassOf ?y }
+         } OPTION (
+             TRANSITIVE,
+             T_DISTINCT, t_in(?x),
+             t_out(?y),
+             t_step('path_id') as ?path,
+             t_step(?x) as ?route,
+             t_step('step_no') AS ?jump,
+             T_DIRECTION 2
+            )
+          FILTER ( ?y = <http://purl.org/obo/owl/MA#MA_0002889> )
+        }
+       )
+      )
+    )
+ }
+ ?gene_id <http://www.purl.org/RGD/core#hasLocation> ?location .
+ ?location <http://www.purl.org/RGD/core#hasChromosome> "5" .
+ ?location <http://www.purl.org/RGD/core#hasChrStart> ?start FILTER (xsd:integer(?start) >= 139690801) .
+ ?location <http://www.purl.org/RGD/core#hasChrStart> ?start FILTER (xsd:integer(?start) <= 171801867) .
+ ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop FILTER (xsd:integer(?stop) <= 171801867) .
+ ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop FILTER (xsd:integer(?stop) >= 139690801) .
+ ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_symbol .
+ ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
+} ORDER BY ?gene_symbol
+
+
+
+find_genes_from_range_with_annotations
+SELECT DISTINCT ?gene_id ?gene_symbol WHERE {
+ ?gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?gene_annotation .
+ { ?gene_annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> <http://purl.org/obo/owl/MP#MP_0002842> }
+ UNION
+ { ?gene_annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> <http://purl.org/obo/owl/MA#MA_0002889> }
+ ?gene_id <http://www.purl.org/RGD/core#hasLocation> ?location .
+ ?location <http://www.purl.org/RGD/core#hasChromosome> "5" .
+ ?location <http://www.purl.org/RGD/core#hasChrStart> ?start FILTER (xsd:integer(?start) >= 139690801) .
+ ?location <http://www.purl.org/RGD/core#hasChrStart> ?start FILTER (xsd:integer(?start) <= 171801867) .
+ ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop FILTER (xsd:integer(?stop) <= 171801867) .
+ ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop FILTER (xsd:integer(?stop) >= 139690801) .
+ ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_symbol .
+ ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
+} ORDER BY ?gene_symbol
+
+
+#subterms
+
+SELECT DISTINCT ?x WHERE {
+  { SELECT ?x ?y WHERE { ?x rdfs:subClassOf ?y }
+} OPTION (
+ TRANSITIVE,
+ T_DISTINCT, t_in(?x),
+ t_out(?y),
+ t_step('path_id') as ?path,
+ t_step(?x) as ?route,
+ t_step('step_no') AS ?jump,
+ T_DIRECTION 2 )
+FILTER ( ?y = <http://purl.org/obo/owl/MA#MA_0002889> )
+}
+
+#subterms 2
+SELECT DISTINCT ?x ?path ?jump WHERE {
+  { SELECT ?x ?y WHERE {
+?x rdfs:subClassOf ?sc .
+?sc <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Restriction> .
+?sc <http://www.w3.org/2002/07/owl#onProperty> <http://purl.org/obo/owl/OBO_REL#part_of> .
+?sc <http://www.w3.org/2002/07/owl#someValuesFrom> ?y .
+ }
+} OPTION (
+ TRANSITIVE,
+ T_DISTINCT, t_in(?x),
+ t_out(?y),
+ t_step('path_id') as ?path,
+ t_step(?x) as ?route,
+ t_step('step_no') AS ?jump,
+ T_DIRECTION 2 )
+FILTER ( ?y = <http://purl.org/obo/owl/MA#MA_0000027> )
+}
+
+
+
 get genes for term from qtl
 SELECT DISTINCT ?qtl_id ?gene_id ?gene_name ?term_id ?term_name WHERE {
   ?qtl_id <http://purl.org/dc/elements/1.1/title> "Rf20"@en .
-  ?qtl_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Qtl> .
-  ?qtl_id <http://rgd.mcw.edu/core/Annotation> ?node .
+  ?qtl_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Qtl> .
+  ?qtl_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?node .
   ?node <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?term_id .
   ?term_id <http://www.w3.org/2000/01/rdf-schema#label> ?term_name .
-  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> .
+  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
   ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name .
-  ?gene_id <http://rgd.mcw.edu/core/Annotation> ?gene_annotation .
+  ?gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?gene_annotation .
   ?gene_annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?term_id .
 } ORDER BY ?qtl_id
 
 get terms for QTL
 SELECT DISTINCT ?qtl_id ?annotation ?term_name WHERE {
   ?qtl_id <http://purl.org/dc/elements/1.1/title> "Rf20"@en .
-  ?qtl_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Qtl> .
-  ?qtl_id <http://rgd.mcw.edu/core/Annotation> ?node .
+  ?qtl_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Qtl> .
+  ?qtl_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?node .
   ?node <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?annotation .
   ?annotation <http://www.w3.org/2000/01/rdf-schema#label> ?term_name
 } ORDER BY ?qtl_id
 
 get terms for range
-SELECT DISTINCT ?term_id ?term_name WHERE { ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> . ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name . ?gene_id <http://rgd.mcw.edu/core/GenomicLocation> ?location . ?location <http://rgd.mcw.edu/core/Chromosome> "2" . ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) >= 155920808) . ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) <= 210636008) . ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) <= 210636008) . ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) >= 155920808) . ?gene_id <http://rgd.mcw.edu/core/Annotation> ?annotation . ?annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?term_id . ?term_id <http://www.w3.org/2000/01/rdf-schema#label> ?term_name . } ORDER BY ?term_id
+SELECT DISTINCT ?term_id ?term_name WHERE { ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> . ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name . ?gene_id <http://www.purl.org/RGD/core#hasLocation> ?location . ?location <http://www.purl.org/RGD/core#hasChromosome> "2" . ?location <http://www.purl.org/RGD/core#hasChrStart> ?start FILTER (xsd:integer(?start) >= 155920808) . ?location <http://www.purl.org/RGD/core#hasChrStart> ?start FILTER (xsd:integer(?start) <= 210636008) . ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop FILTER (xsd:integer(?stop) <= 210636008) . ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop FILTER (xsd:integer(?stop) >= 155920808) . ?gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?annotation . ?annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?term_id . ?term_id <http://www.w3.org/2000/01/rdf-schema#label> ?term_name . } ORDER BY ?term_id
 
-query = 'SELECT DISTINCT ?term_id ?term_name WHERE { ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> . ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name . ?gene_id <http://rgd.mcw.edu/core/GenomicLocation> ?location . ?location <http://rgd.mcw.edu/core/Chromosome> "2" . ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) >= 155920808) . ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) <= 210636008) . ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) <= 210636008) . ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) >= 155920808) . ?gene_id <http://rgd.mcw.edu/core/Annotation> ?annotation . ?annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?term_id . ?term_id <http://www.w3.org/2000/01/rdf-schema#label> ?term_name . } ORDER BY ?term_id'
+query = 'SELECT DISTINCT ?term_id ?term_name WHERE { ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> . ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name . ?gene_id <http://www.purl.org/RGD/core#hasLocation> ?location . ?location <http://www.purl.org/RGD/core#hasChromosome> "2" . ?location <http://www.purl.org/RGD/core#hasChrStart> ?start FILTER (xsd:integer(?start) >= 155920808) . ?location <http://www.purl.org/RGD/core#hasChrStart> ?start FILTER (xsd:integer(?start) <= 210636008) . ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop FILTER (xsd:integer(?stop) <= 210636008) . ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop FILTER (xsd:integer(?stop) >= 155920808) . ?gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?annotation . ?annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?term_id . ?term_id <http://www.w3.org/2000/01/rdf-schema#label> ?term_name . } ORDER BY ?term_id'
 
 
 SELECT ?gene_id ?gene_name ?term_id ?term_name WHERE {
-  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> .
+  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
   ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name .
-  ?gene_id <http://rgd.mcw.edu/core/GenomicLocation> ?location .
-  ?location <http://rgd.mcw.edu/core/Chromosome> "2" .
-  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) >= 155920808) .
-  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) <= 210636008) .
-  ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) <= 210636008) .
-  ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) >= 155920808) .
-  ?gene_id <http://rgd.mcw.edu/core/Annotation> ?annotation .
+  ?gene_id <http://www.purl.org/RGD/core#hasLocation> ?location .
+  ?location <http://www.purl.org/RGD/core#hasChromosome> "2" .
+  ?location <http://www.purl.org/RGD/core#hasChrStart> ?start FILTER (xsd:integer(?start) >= 155920808) .
+  ?location <http://www.purl.org/RGD/core#hasChrStart> ?start FILTER (xsd:integer(?start) <= 210636008) .
+  ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop FILTER (xsd:integer(?stop) <= 210636008) .
+  ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop FILTER (xsd:integer(?stop) >= 155920808) .
+  ?gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?annotation .
   ?annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?term_id
   ?term_id <http://www.w3.org/2000/01/rdf-schema#label> ?term_name
 } ORDER BY ?gene_name
@@ -45,36 +136,36 @@ find_genes_for_location
 
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 SELECT ?gene_id ?gene_name WHERE {
-  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> .
+  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
   ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name .
-  ?gene_id <http://rgd.mcw.edu/core/GenomicLocation> ?location .
-  ?location <http://rgd.mcw.edu/core/Chromosome> "2" .
-  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) >= 155920808) .
-  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) <= 210636008) .
-  ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) <= 210636008) .
-  ?location <http://rgd.mcw.edu/core/Stop> ?stop FILTER (xsd:integer(?stop) >= 155920808) .
+  ?gene_id <http://www.purl.org/RGD/core#hasLocation> ?location .
+  ?location <http://www.purl.org/RGD/core#hasChromosome> "2" .
+  ?location <http://www.purl.org/RGD/core#hasChrStart> ?start FILTER (xsd:integer(?start) >= 155920808) .
+  ?location <http://www.purl.org/RGD/core#hasChrStart> ?start FILTER (xsd:integer(?start) <= 210636008) .
+  ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop FILTER (xsd:integer(?stop) <= 210636008) .
+  ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop FILTER (xsd:integer(?stop) >= 155920808) .
 } ORDER BY ?gene_name
 
 
 qtl_start_stop
 
 SELECT ?chromosome ?start ?stop WHERE {
-  ?qtl <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Qtl> .
+  ?qtl <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Qtl> .
   ?qtl <http://purl.org/dc/elements/1.1/title> "Bp101"@en .
-  ?qtl <http://rgd.mcw.edu/core/GenomicLocation> ?location .
-  ?location <http://rgd.mcw.edu/core/Chromosome> ?chromosome .
-  ?location <http://rgd.mcw.edu/core/Start> ?start .
-  ?location <http://rgd.mcw.edu/core/Stop> ?stop .
+  ?qtl <http://www.purl.org/RGD/core#hasLocation> ?location .
+  ?location <http://www.purl.org/RGD/core#hasChromosome> ?chromosome .
+  ?location <http://www.purl.org/RGD/core#hasChrStart> ?start .
+  ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop .
 }
 
 rgd_qtl_with_location
 
 SELECT DISTINCT ?qtl_id ?chromosome ?starts_at ?stops_at WHERE {
   ?qtl_id <http://purl.org/dc/elements/1.1/title> "Bp101"@en .
-  ?qtl_id <http://rgd.mcw.edu/core/GenomicLocation> ?location .
-  ?location <http://rgd.mcw.edu/core/Chromosome> ?chromosome .
-  ?location <http://rgd.mcw.edu/core/Start> ?starts_at .
-  ?location <http://rgd.mcw.edu/core/Stop> ?stops_at .
+  ?qtl_id <http://www.purl.org/RGD/core#hasLocation> ?location .
+  ?location <http://www.purl.org/RGD/core#hasChromosome> ?chromosome .
+  ?location <http://www.purl.org/RGD/core#hasChrStart> ?starts_at .
+  ?location <http://www.purl.org/RGD/core#hasChrStop> ?stops_at .
 } ORDER BY ?qtl_id
 
 
@@ -82,44 +173,24 @@ find_gene_range
 
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 SELECT ?gene_id ?gene_name WHERE {
-  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> .
+  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
   ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name .
-  ?gene_id <http://rgd.mcw.edu/core/GenomicLocation> ?location .
-  ?location <http://rgd.mcw.edu/core/Chromosome> "1" .
-  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) >= 126938969) .
-  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) <= 185923619) .
-  ?location <http://rgd.mcw.edu/core/Stop>  ?stop FILTER (xsd:integer(?stop) <= 185923619) .
-  ?location <http://rgd.mcw.edu/core/Stop>  ?stop FILTER (xsd:integer(?stop) >= 126938969) .
+  ?gene_id <http://www.purl.org/RGD/core#hasLocation> ?location .
+  ?location <http://www.purl.org/RGD/core#hasChromosome> "1" .
+  ?location <http://www.purl.org/RGD/core#hasChrStart> ?start FILTER (xsd:integer(?start) >= 126938969) .
+  ?location <http://www.purl.org/RGD/core#hasChrStart> ?start FILTER (xsd:integer(?start) <= 185923619) .
+  ?location <http://www.purl.org/RGD/core#hasChrStop>  ?stop FILTER (xsd:integer(?stop) <= 185923619) .
+  ?location <http://www.purl.org/RGD/core#hasChrStop>  ?stop FILTER (xsd:integer(?stop) >= 126938969) .
 }
 ORDER BY ?gene_name
 
-query = VIRTUOSO_SERVER.select(:gene_name).distinct(true).where([:gene_id, DC11.title, :gene_name]).where([:gene_id, RDFS.type, Constants::RGD_CORE['Gene']]).where([:gene_id, Constants::RGD_CORE['GenomicLocation'], :location]).where([:location, Constants::RGD_CORE['Chromosome'], "2"]).where([:location, Constants::RGD_CORE['Start'], "?start FILTER (xsd:integer(?start) >= 1)"]).where([:location, Constants::RGD_CORE['Start'], :start]).filter('xsd:integer(?start) <= 20000000').where([:location, Constants::RGD_CORE['Stop'], :stop]).filter('xsd:integer(?stop) <= 20000000').where([:location, Constants::RGD_CORE['Stop'], :stop]).filter('xsd:integer(?stop) >= 1').order(:gene_name)
-
-find_genes_from_range_with_annotations
-SELECT ?gene_id ?gene_name WHERE {
-  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> .
-  ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name .
-  ?gene_id <http://rgd.mcw.edu/core/GenomicLocation> ?location .
-  ?location <http://rgd.mcw.edu/core/Chromosome> "20" .
-  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) >= 29744366) .
-  ?location <http://rgd.mcw.edu/core/Start> ?start FILTER (xsd:integer(?start) <= 62045696) .
-  ?location <http://rgd.mcw.edu/core/Stop>  ?stop FILTER (xsd:integer(?stop) <= 62045696) .
-  ?location <http://rgd.mcw.edu/core/Stop>  ?stop FILTER (xsd:integer(?stop) >= 29744366) .
-  ?gene_id <http://rgd.mcw.edu/core/Annotation> ?annotation .
-
-  { ?annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> <http://purl.org/obo/owl/MP#MP_0005325> }
-  UNION
-  { ?annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> <http://purl.org/obo/owl/MP#MP_0001859> }
-
-}
-ORDER BY ?gene_name
-LIMIT 100
+query = VIRTUOSO_SERVER.select(:gene_name).distinct(true).where([:gene_id, DC11.title, :gene_name]).where([:gene_id, RDFS.type, Constants::RGD_CORE['Gene']]).where([:gene_id, Constants::RGD_CORE['hasLocation'], :location]).where([:location, Constants::RGD_CORE['hasChromosome'], "2"]).where([:location, Constants::RGD_CORE['hasChrStart'], "?start FILTER (xsd:integer(?start) >= 1)"]).where([:location, Constants::RGD_CORE['hasChrStart'], :start]).filter('xsd:integer(?start) <= 20000000').where([:location, Constants::RGD_CORE['hasChrStop'], :stop]).filter('xsd:integer(?stop) <= 20000000').where([:location, Constants::RGD_CORE['hasChrStop'], :stop]).filter('xsd:integer(?stop) >= 1').order(:gene_name)
 
 
 gene_names
 
 SELECT DISTINCT ?gene_name WHERE {
-  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Gene> .
+  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
   ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name . }
 ORDER BY ?gene_name
 
@@ -128,14 +199,14 @@ annotated_rgd_qtl_with_loc
 
 SELECT DISTINCT ?qtl_id ?qtl_name ?chromosome ?starts_at ?stops_at WHERE {
   ?qtl_id <http://purl.org/dc/elements/1.1/title> ?qtl_name .
-  ?qtl_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Qtl> .
-  ?qtl_id <http://rgd.mcw.edu/core/Annotation> ?node .
+  ?qtl_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Qtl> .
+  ?qtl_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?node .
   ?node <http://www.geneontology.org/formats/oboInOwl#hasDbXref> <http://purl.org/obo/owl/MP#MP_0002842> .
-  ?node <http://rgd.mcw.edu/core/evidenceCode> <http://rgd.mcw.edu/core/QTM> .
-  ?qtl_id <http://rgd.mcw.edu/core/GenomicLocation> ?location .
-  ?location <http://rgd.mcw.edu/core/Chromosome> ?chromosome .
-  ?location <http://rgd.mcw.edu/core/Start> ?starts_at .
-  ?location <http://rgd.mcw.edu/core/Stop> ?stops_at .
+  ?node <http://www.purl.org/RGD/core#evidenceCode> <http://www.purl.org/RGD/core#QTM> .
+  ?qtl_id <http://www.purl.org/RGD/core#hasLocation> ?location .
+  ?location <http://www.purl.org/RGD/core#hasChromosome> ?chromosome .
+  ?location <http://www.purl.org/RGD/core#hasChrStart> ?starts_at .
+  ?location <http://www.purl.org/RGD/core#hasChrStop> ?stops_at .
 } ORDER BY ?qtl_id
 
 
@@ -143,10 +214,10 @@ annotated_rgd_qtl
 
 SELECT DISTINCT ?qtl_id ?qtl_name WHERE {
   ?qtl_id <http://purl.org/dc/elements/1.1/title> ?qtl_name .
-  ?qtl_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rgd.mcw.edu/core/Qtl> .
-  ?qtl_id <http://rgd.mcw.edu/core/Annotation> ?node .
+  ?qtl_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Qtl> .
+  ?qtl_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?node .
   ?node <http://www.geneontology.org/formats/oboInOwl#hasDbXref> <http://purl.org/obo/owl/MP#MP_0002842> .
-  ?node <http://rgd.mcw.edu/core/evidenceCode> <http://rgd.mcw.edu/core/QTM> .
+  ?node <http://www.purl.org/RGD/core#evidenceCode> <http://www.purl.org/RGD/core#QTM> .
 } ORDER BY ?qtl_id
 
 
@@ -154,9 +225,9 @@ annotated_rgd
 
 SELECT DISTINCT ?gene_id ?gene_name WHERE {
   ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_name .
-  ?gene_id <http://rgd.mcw.edu/core/Annotation> ?node .
+  ?gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?node .
   ?node <http://www.geneontology.org/formats/oboInOwl#hasDbXref> <http://purl.org/obo/owl/MP#MP_0002842> .
-  ?node <http://rgd.mcw.edu/core/evidenceCode> <http://rgd.mcw.edu/core/QTM> .
+  ?node <http://www.purl.org/RGD/core#evidenceCode> <http://www.purl.org/RGD/core#QTM> .
 }
 
 
@@ -170,3 +241,220 @@ everything
 SELECT ?s ?p ?o WHERE { ?s ?p ?o }
 
 
+
+DB.DBA.TTLP_MT (file_to_string_output ('/usr/local/agraph/rules.nt'), '', 'http://qtlhighlighter.hmcw.mcw.edu/ruleset');
+rdfs_rule_set ('ruleset', 'http://qtlhighlighter.hmcw.mcw.edu/ruleset');
+
+
+
+SELECT DISTINCT ?x WHERE {
+{ SELECT ?x ?y WHERE { ?x rdfs:subClassOf ?y }
+} OPTION (
+TRANSITIVE,
+T_DISTINCT, t_in(?x),
+t_out(?y),
+t_step('path_id') as ?path,
+t_step(?x) as ?route,
+t_step('step_no') AS ?jump,
+T_DIRECTION 2
+)
+FILTER ( ?y = <http://purl.org/obo/owl/MA#MA_0002889> )
+}
+
+
+define input:inference "ruleset"
+SELECT ?s
+WHERE {?s rdfs:subClassOf <http://purl.org/obo/owl/MA#MA_0000596> }
+
+
+DEFINE input:inference "ruleset"
+SELECT * WHERE {
+?subterm ?p ?o .
+ {
+   SELECT DISTINCT ?x AS ?subterm WHERE {
+    { SELECT ?x ?y WHERE { ?x rdfs:subClassOf ?y }
+    } OPTION (
+       TRANSITIVE,
+       T_DISTINCT, t_in(?x),
+       t_out(?y),
+       t_step('path_id') as ?path,
+       t_step(?x) as ?route,
+       t_step('step_no') AS ?jump,
+       T_DIRECTION 2
+      )
+    FILTER ( ?y = <http://purl.org/obo/owl/MA#MA_0002889> )
+    }
+  }
+}
+
+
+DEFINE input:inference "ruleset"
+SELECT DISTINCT * WHERE
+{
+  ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_symbol .
+  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
+  ?annotated_gene_id <http://purl.org/dc/elements/1.1/title> ?annotated_gene_symbol .
+  ?annotated_gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
+
+  ?gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?pathway_annotation .
+  ?annotated_gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?annotated_pathway_annotation .
+
+  ?pathway_annotation <http://www.purl.org/RGD/core#hasOntologyId> ?pathway_ontology_id .
+  ?annotated_pathway_annotation <http://www.purl.org/RGD/core#hasOntologyId> ?pathway_ontology_id .
+  ?pathway_ontology_id <http://www.w3.org/2000/01/rdf-schema#label> ?pathway_name .
+
+  ?annotated_gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?gene_annotation .
+  ?gene_annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?subterm .
+
+  {
+   SELECT DISTINCT ?x AS ?subterm WHERE {
+    { SELECT ?x ?y WHERE { ?x rdfs:subClassOf ?y }
+    } OPTION (
+       TRANSITIVE,
+       T_DISTINCT, t_in(?x),
+       t_out(?y),
+       t_step('path_id') as ?path,
+       t_step(?x) as ?route,
+       t_step('step_no') AS ?jump,
+       T_DIRECTION 2
+      )
+    FILTER ( ?y = <http://purl.org/obo/owl/MP#MP_0000230> )
+    }
+  }
+
+  ?gene_id <http://www.purl.org/RGD/core#hasLocation> ?location .
+  ?location <http://www.purl.org/RGD/core#hasChromosome> ?chr .
+  ?location <http://www.purl.org/RGD/core#hasChrStart> ?start .
+  ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop .
+  FILTER (xsd:integer(?start) >= 139690801)
+  FILTER (xsd:integer(?start) <= 171801867)
+  FILTER (xsd:integer(?stop) <= 171801867)
+  FILTER (xsd:integer(?stop) >= 139690801)
+  FILTER (?chr = "5")
+  FILTER(regex(?pathway_ontology_id, '^http://purl.org/obo/owl/PW', 'i'))
+}
+ORDER BY ?gene_id
+LIMIT 50
+
+
+DEFINE input:inference "ruleset"
+SELECT DISTINCT ?gene_id ?gene_symbol WHERE {
+ ?gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?gene_annotation .
+ ?gene_annotation <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?subterm .
+ {
+   SELECT DISTINCT ?x AS ?subterm WHERE {
+    { SELECT ?x ?y WHERE { ?x rdfs:subClassOf ?y }
+    } OPTION (
+       TRANSITIVE,
+       T_DISTINCT, t_in(?x),
+       t_out(?y),
+       t_step('path_id') as ?path,
+       t_step(?x) as ?route,
+       t_step('step_no') AS ?jump,
+       T_DIRECTION 2
+      )
+    FILTER ( ?y = <http://purl.org/obo/owl/MP#MP_0000230> )
+    }
+  }
+ ?gene_id <http://www.purl.org/RGD/core#hasLocation> ?location .
+ ?location <http://www.purl.org/RGD/core#hasChromosome> ?chr .
+ ?location <http://www.purl.org/RGD/core#hasChrStart> ?start .
+ ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop .
+ ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_symbol .
+ ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
+ FILTER (xsd:integer(?start) >= 139690801)
+ FILTER (xsd:integer(?start) <= 171801867)
+ FILTER (xsd:integer(?stop) <= 171801867)
+ FILTER (xsd:integer(?stop) >= 139690801)
+ FILTER (?chr = "5")
+ } ORDER BY ?gene_symbol
+
+
+
+
+DEFINE input:inference "ruleset"
+SELECT DISTINCT ?gene_id ?gene_symbol ?annotated_gene_id ?annotated_gene_symbol ?pathway_ontology_id ?pathway_name WHERE
+{
+  ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_symbol .
+  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
+  ?gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?pathway_annotation .
+  ?pathway_annotation <http://www.purl.org/RGD/core#hasOntologyId> ?pathway_ontology_id .
+
+  ?annotated_gene_id <http://purl.org/dc/elements/1.1/title> ?annotated_gene_symbol .
+  ?annotated_gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
+  ?annotated_gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?annotated_pathway_annotation .
+  ?annotated_pathway_annotation <http://www.purl.org/RGD/core#hasOntologyId> ?pathway_ontology_id .
+
+  ?pathway_ontology_id <http://www.w3.org/2000/01/rdf-schema#label> ?pathway_name .
+
+  ?annotated_gene_id <http://www.purl.org/RGD/core#hasLocation> ?location .
+  ?location <http://www.purl.org/RGD/core#hasChromosome> ?chr .
+  ?location <http://www.purl.org/RGD/core#hasChrStart> ?start .
+  ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop .
+  FILTER (xsd:integer(?start) >= 139690801)
+  FILTER (xsd:integer(?start) <= 171801867)
+  FILTER (xsd:integer(?stop) <= 171801867)
+  FILTER (xsd:integer(?stop) >= 139690801)
+  FILTER (?chr = "5")
+
+  FILTER(regex(?pathway_ontology_id, '^http://purl.org/obo/owl/PW', 'i'))
+}
+ORDER BY ?gene_id
+LIMIT 50
+
+
+DEFINE input:inference "ruleset"
+SELECT DISTINCT ?gene_id ?gene_symbol ?annotated_gene_id ?annotated_gene_symbol ?pathway_ontology_id ?pathway_name WHERE
+{
+  ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_symbol .
+  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
+  ?annotated_gene_id <http://purl.org/dc/elements/1.1/title> ?annotated_gene_symbol .
+  ?annotated_gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
+
+  ?gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?pathway_annotation .
+  ?pathway_annotation <http://www.purl.org/RGD/core#hasOntologyId> ?pathway_ontology_id .
+  ?annotated_gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?annotated_pathway_annotation .
+  ?annotated_pathway_annotation <http://www.purl.org/RGD/core#hasOntologyId> ?pathway_ontology_id .
+  ?pathway_ontology_id <http://www.w3.org/2000/01/rdf-schema#label> ?pathway_name .
+
+  ?annotated_gene_id <http://www.purl.org/RGD/core#hasLocation> ?location .
+  ?location <http://www.purl.org/RGD/core#hasChromosome> ?chr .
+  ?location <http://www.purl.org/RGD/core#hasChrStart> ?start .
+  ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop .
+  FILTER (xsd:integer(?start) >= 139690801)
+  FILTER (xsd:integer(?start) <= 171801867)
+  FILTER (xsd:integer(?stop) <= 171801867)
+  FILTER (xsd:integer(?stop) >= 139690801)
+  FILTER (?chr = "5")
+
+  FILTER(regex(?pathway_ontology_id, '^http://purl.org/obo/owl/PW', 'i'))
+}
+ORDER BY ?gene_id
+
+DEFINE input:inference "ruleset"
+SELECT DISTINCT ?gene_id ?gene_symbol ?annotated_gene_id ?annotated_gene_symbol ?pathway_ontology_id ?pathway_name WHERE
+{
+  ?gene_id <http://purl.org/dc/elements/1.1/title> ?gene_symbol .
+  ?gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
+  ?annotated_gene_id <http://purl.org/dc/elements/1.1/title> ?annotated_gene_symbol .
+  ?annotated_gene_id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.purl.org/RGD/core#Gene> .
+
+  ?gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?pathway_annotation .
+  ?pathway_annotation <http://www.purl.org/RGD/core#hasOntologyId> ?pathway_ontology_id .
+  ?annotated_gene_id <http://www.purl.org/RGD/core#hasOntologyAnnotation> ?annotated_pathway_annotation .
+  ?annotated_pathway_annotation <http://www.purl.org/RGD/core#hasOntologyId> ?pathway_ontology_id .
+  ?pathway_ontology_id <http://www.w3.org/2000/01/rdf-schema#label> ?pathway_name .
+
+  ?annotated_gene_id <http://www.purl.org/RGD/core#hasLocation> ?location .
+  ?location <http://www.purl.org/RGD/core#hasChromosome> ?chr .
+  ?location <http://www.purl.org/RGD/core#hasChrStart> ?start .
+  ?location <http://www.purl.org/RGD/core#hasChrStop> ?stop .
+  FILTER (xsd:integer(?start) >= 139690801)
+  FILTER (xsd:integer(?start) <= 171801867)
+  FILTER (xsd:integer(?stop) <= 171801867)
+  FILTER (xsd:integer(?stop) >= 139690801)
+  FILTER (?chr = "5")
+
+  FILTER(regex(?pathway_ontology_id, '^http://purl.org/obo/owl/PW', 'i'))
+}
+ORDER BY ?gene_id

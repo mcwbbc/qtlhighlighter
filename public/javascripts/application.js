@@ -23,12 +23,11 @@ function set_genes(array) {
 };
 
 function set_terms(array) {
+  $('.selected-terms').empty();
   if (array.length > 0) {
     $.each(array, function(index, term) {
       set_term(term.term_name, term.term_id, term.css_klass);
     });
-  } else {
-    $('.term-count').text('(0)');
   };
 };
 
@@ -49,8 +48,6 @@ function set_qtl_info(qtl_symbol, chromosome, starts_at, ends_at) {
 function set_qtl_terms(qtl_symbol) {
   $.post("/qtls/ontology_terms", {'format': 'js', 'qtl_symbol' : qtl_symbol},
   function(data) {
-    $('.messages').children().removeClass('newest');
-    $('<div/>').addClass('message').addClass('newest').html(data.message).prependTo('.messages');
     if (data.valid) {
       set_terms(data.terms);
       set_qtl_info(data.qtl_symbol, data.chromosome, data.starts_at, data.ends_at);
@@ -231,6 +228,23 @@ $(function() {
       }
     });
   };
+
+
+  $('.toggle-arrow').live('click', function(event) {
+    if ($(this).closest('tbody').attr('status') == 'hidden') {
+      $(this).closest('tbody').children('tr').show();
+      $(this).closest('tbody').attr('status', 'shown');
+      $(this).attr('src', '/images/icons/delete.png');
+      
+    } else {
+      $(this).closest('tbody').children('tr').hide();
+      $(this).closest('tbody').children('tr:first-child').show();
+      $(this).closest('tbody').attr('status', 'hidden');
+      $(this).attr('src', '/images/icons/add.png');
+    }
+    return false;
+  });
+
 
 });
 

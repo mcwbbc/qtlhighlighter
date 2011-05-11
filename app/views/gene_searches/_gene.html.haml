@@ -1,2 +1,9 @@
-.selected-gene{:title => gene['gene_id']}
-  = link_to(gene['gene_symbol'], "http://rgd.mcw.edu/rgdweb/search/genes.html?term=#{gene['gene_symbol']}", :target => "_blank")
+%tbody{'status' => 'hidden'}
+  %tr
+    %td
+      = image_tag('icons/add.png', :width => 16, :height => 16, :class => 'toggle-arrow')
+      = gene_link_output(@genes[gene]['gene_symbol'])
+    %td{:colspan => 3}
+      = gene_evidence_chart(@genes[gene])
+  = render(:partial => "gene_searches/term.html.haml", :collection => @genes[gene]['terms'].keys, :locals => {:gene_hash => @genes[gene]})
+  = render(:partial => "gene_searches/pathway.html.haml", :collection => @genes[gene]['pathways'].keys, :locals => {:gene_hash => @genes[gene]})

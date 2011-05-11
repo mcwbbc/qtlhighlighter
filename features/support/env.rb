@@ -27,10 +27,6 @@ require 'cucumber/rails/capybara_javascript_emulation' # Lets you click links wi
 Capybara.server_port = 9876
 Capybara.app_host = "http://localhost:#{Capybara.server_port}"
 
-Capybara.register_driver :selenium do |app|
-  Capybara::Driver::Selenium.new(app, :browser => :firefox)
-end
-
 Capybara.default_selector = :css
 Capybara.default_wait_time = 5 # we need to wait for rdfstore :(
 Capybara.ignore_hidden_elements = false

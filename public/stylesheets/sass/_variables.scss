@@ -17,6 +17,7 @@ $help_bg: #eef3dc;
 $help_txt: #000;
 
 $row_header_bg: #000;
+$row_header_fg: #fff;
 $row_odd_bg: #fff;
 $row_even_bg: #c5d6fa;
 $row_alt_bg: #d3d3d3;
@@ -36,10 +37,17 @@ $pagination_current_bg: #007a74;
 $pagination_current_fg: #fff;
 
 
-$adult_mouse_bg: #FFBEE5;
+$adult_mouse_bg: #FF9993;
+$evidence_code_bg: #5FFF87;
+$disease_bg: #DBFF20;
 $biological_process_bg: #FAEBBE;
 $gene_ontology_bg: #ACD8AB;
-$molecular_function_bg: #DBABE3;
+$molecular_function_bg: #E381DF;
 $cellular_component_bg: #CBCBCB;
 $cell_bg: #ADB2F5;
 $mamalian_phenotype_bg: #DDC367;
+
+$empty_marker: #fff;
+$marker_border: #000;
+$has_pathway_bg: #ff0000;
+$has_term_bg: #00ff00;

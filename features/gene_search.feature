@@ -27,26 +27,26 @@ Feature: Gene Search
     When I fill in "ontologyterm-search" with "<typed_string>"
     And I wait for 2 seconds
     And I click on the "<name>" autocomplete option
-    Then I should see "<name>" within ".selected-term"
+    Then I should see "<name>" within ".selected-terms"
     Examples:
       | typed_string | name |
       | aor | aorta |
       | ce | cell |
 
   @selenium
-  Scenario Outline: Select an qtl
+  Scenario Outline: Select a qtl
     Given I am on the new gene search page
     And I fill in "qtl-search" with "<typed_string>"
     And I wait for 2 seconds
     And I click on the "<qtl>" autocomplete option
-    Then I should see "<term>" within ".selected-term"
+    Then I should see "<term>" within ".selected-terms"
     And the "qtl-symbol" field should contain "<qtl>"
     And the "qtl-chromosome-name" field should contain "<chromosome>"
     And the "qtl-starts-at" field should contain "<starts_at>"
     And the "qtl-ends-at" field should contain "<ends_at>"
     Examples:
       | typed_string | qtl | term | chromosome | starts_at | ends_at |
-      | bp | Bp101 | increased blood pressure | 2 | 155920808 | 210636008 |
+      | bp | Bp101 | increased systemic arterial blood pressure | 2 | 155920808 | 210636008 |
       | rf | Rf1 | glomerulosclerosis | 1 | 202322277 | 247322277 |
 
   @selenium
@@ -81,12 +81,12 @@ Feature: Gene Search
     And I fill in "qtl-search" with "Bp10"
     And I wait for 2 seconds
     And I click on the "Bp103" autocomplete option
-    And I should see "increased blood pressure" within ".selected-term"
+    And I should see "increased systemic arterial blood pressure" within ".selected-terms"
     And I fill in "ontologyterm-search" with "ce"
     And I wait for 2 seconds
     And I click on the "cell" autocomplete option
-    And I should see "cell" within ".selected-term"
+    And I should see "cell" within ".selected-terms"
     When I press "Submit search"
     And I wait for 5 seconds
     Then I should see "Results"
-    And I should see "Guca2b" within ".selected-gene"
+    And I should see "Guca2b" within ".selected-genes"

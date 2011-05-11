@@ -1,0 +1,30 @@
+- title t('.title')
+= page_title(t('.title'))
+.grid-container
+  .grid_2.alpha
+  .grid_20
+    %h3
+      QTL candidate gene listing
+    %p
+      This file includes a listing of all of the genes within a QTL range that match the annotations associated to the QTL.
+    %p
+      For example,
+      %strong
+        Bp103
+      is annotated with
+      %em
+        Hypertension.
+      %strong
+        Nppa
+      is within the genomic location of
+      %strong
+        Bp103
+      and is also annotated to
+      %em
+        Hypertension
+      so it is included in the list.
+    %ul
+      %li
+        File:
+        = link_to("qtl_candidate_gene_list.csv", 'downloads/qtl_candidate_gene_list.csv')
+  .grid_2.omega

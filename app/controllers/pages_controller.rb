@@ -19,4 +19,7 @@ class PagesController < ApplicationController
   def graphs
   end
 
+  def downloads
+  end
+
 end

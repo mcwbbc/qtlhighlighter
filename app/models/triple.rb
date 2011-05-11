@@ -1,6 +1,21 @@
 class Triple
 
+  @queue = :triples
+
   class << self
+
+
+    def perform(filename, line)
+      graph = Triple.parse(line)
+
+      string = RDF::NTriples::Writer.buffer do |writer|
+        graph.each_statement do |statement|
+          writer << statement
+        end
+      end
+
+      Resque.enqueue(WriteGraph, filename, string)
+    end
 
     def parse_file(filename)
       RDF::Writer.open("#{filename}.nt") do |writer|
@@ -9,64 +24,83 @@ class Triple
 #       RGD, 631210, Bw3, , MP:0000010, RGD:619690|PMID:11087657, QTM, , N, Obesity QTL 3, , qtl, taxon:10116, , RGD, ,
 #       RGD, 1598849, Memor17, , MP:0001449, RGD:1581615|PMID:16837653, IED, , N, Memory QTL 17, , qtl, taxon:10116, 20070103, RGD, ,
           next if !!(line.chomp =~ /^!gaf-version: 2.0/)
-          graph = parse(line, RDF::Graph.new)
+          graph = Triple.parse(line)
           graph.each_statement do |statement|
             writer << statement
           end
-          graph = nil
         end
       end
     end
 
 
-    def parse(line, graph)
-      db_name, db_id, db_object_symbol, qualifier, go_id, db_references, evidence_code, with_from, aspect, db_object_name, db_object_synonyms, db_object_type, taxons, date, assigned_by, annotation_extensions, gene_product_form_id = line.chomp.split("\t")
-      identifier = generate_identifier(db_name, db_id)
+    def distribute_file(filename)
+      File.open(filename, "r").each do |line|
+#       db_name, db_id, db_object_symbol, qualifier, go_id, db_references, evidence_code, with_from, aspect, db_object_name, db_object_synonyms, db_object_type, taxons, date, assigned_by, annotation_extensions, gene_product_form_id
+#       RGD, 631210, Bw3, , MP:0000010, RGD:619690|PMID:11087657, QTM, , N, Obesity QTL 3, , qtl, taxon:10116, , RGD, ,
+#       RGD, 1598849, Memor17, , MP:0001449, RGD:1581615|PMID:16837653, IED, , N, Memory QTL 17, , qtl, taxon:10116, 20070103, RGD, ,
+        next if !!(line.chomp =~ /^!gaf-version: 2.0/)
+        Resque.enqueue(Triple, filename, line)
+      end
+    end
 
-      node, node_triple = generate_node(identifier)
+
+    def check_file(filename, id_array)
+      File.open(filename, "r").each do |line|
+        next if !!(line.chomp =~ /^!gaf-version: 2.0/)
+        id = line.chomp.split("\t")[1]
+        puts "MISSING: #{id}" if !id_array.include?(id)
+      end
+    end
+
+    def parse(line)
+      graph = RDF::Graph.new
+      db_name, db_id, db_object_symbol, qualifier, go_id, db_references, evidence_code, with_from, aspect, db_object_name, db_object_synonyms, db_object_type, taxons, date, assigned_by, annotation_extensions, gene_product_form_id = line.chomp.split("\t")
+      identifier = Triple.generate_identifier(db_name, db_id)
+
+      node, node_triple = Triple.generate_node(identifier)
       graph << node_triple
 
-      if label_triple = generate_label(identifier, db_object_name)
-        graph << label_triple
-      end
+#      if label_triple = generate_label(identifier, db_object_name)
+#        graph << label_triple
+#      end
 
-      if title_triple = generate_title(identifier, db_object_symbol)
-        graph << title_triple
-      end
+#      if title_triple = generate_title(identifier, db_object_symbol)
+#        graph << title_triple
+#      end
 
-      if item_type_triple = generate_item_type(identifier, db_object_type)
+      if item_type_triple = Triple.generate_item_type(identifier, db_object_type)
         graph << item_type_triple
       end
 
-      if date_triple = generate_date(node, date)
+      if date_triple = Triple.generate_date(node, date)
         graph << date_triple
       end
 
-      if annotation_triple = generate_annotation(node, go_id)
+      if annotation_triple = Triple.generate_annotation(node, go_id)
         graph << annotation_triple
       end
 
-      if evidence_code_triple = generate_evidence_code(node, evidence_code)
+      if evidence_code_triple = Triple.generate_evidence_code(node, evidence_code)
         graph << evidence_code_triple
       end
 
-      if domain_triple = generate_domain(node, assigned_by)
+      if domain_triple = Triple.generate_domain(node, assigned_by)
         graph << domain_triple
       end
 
-      if taxons_triples = generate_taxons(node, taxons)
+      if taxons_triples = Triple.generate_taxons(node, taxons)
         taxons_triples.each do |triple|
           graph << triple
         end
       end
 
-      if db_references_triples = generate_db_references(node, db_references)
+      if db_references_triples = Triple.generate_db_references(node, db_references)
         db_references_triples.each do |triple|
           graph << triple
         end
       end
 
-      if synonyms_triples = generate_synonyms(node, db_object_synonyms)
+      if synonyms_triples = Triple.generate_synonyms(node, db_object_synonyms)
         synonyms_triples.each do |triple|
           graph << triple
         end
@@ -78,6 +112,8 @@ class Triple
       case db_name
         when "RGD"
           Constants::RGD_ID[db_id]
+        when "D"
+          Constants::DISEASE[db_id]
         else
           Constants::PURL_OWL["#{db_name}##{db_name}_#{db_id}"]
       end
@@ -85,7 +121,7 @@ class Triple
 
     def generate_node(identifier)
       node = RDF::Node.uuid(:grammar => /^[A-Za-z][A-Za-z0-9]*/)
-      [node, RDF::Statement.new(identifier, Constants::RGD_CORE['Annotation'], node)]
+      [node, RDF::Statement.new(identifier, Constants::RGD_CORE['hasOntologyAnnotation'], node)]
     end
 
     def generate_date(identifier, date)
@@ -118,12 +154,17 @@ class Triple
     def generate_annotation(identifier, annotation)
       if !annotation.blank?
         db, id = annotation.split(":")
-        RDF::Statement.new(identifier, Constants::OBO_OWL['hasDbXref'], generate_identifier(db, id))
+        if !!(id.blank? && db =~ /^D/)
+          id = db
+          db = "D"
+        end
+        generated_identifier = generate_identifier(db, id)
+        RDF::Statement.new(identifier, Constants::RGD_CORE['hasOntologyId'], generated_identifier)
       end
     end
 
     def generate_evidence_code(identifier, evidence_code)
-      RDF::Statement.new(identifier, Constants::RGD_CORE['evidenceCode'], Constants::RGD_CORE[evidence_code]) if !evidence_code.blank?
+      RDF::Statement.new(identifier, Constants::RGD_CORE['hasEvidenceCode'], RDF::Literal.new(evidence_code, :language => :en)) if !evidence_code.blank?
     end
 
     def generate_db_references(identifier, db_references)

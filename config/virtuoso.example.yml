@@ -1,6 +1,0 @@
-development:
-  host: servername
-  port: 8890
-test:
-  host: servername
-  port: 8890

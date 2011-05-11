@@ -30,5 +30,6 @@ Qtlhighliter::Application.routes.draw do
   match '/about', :to => 'pages#about', :as => 'about'
   match '/help', :to => 'pages#help', :as => 'help'
   match '/css', :to => 'pages#css_test', :as => 'css'
+  match '/downloads', :to => 'pages#downloads', :as => 'downloads'
 
 end

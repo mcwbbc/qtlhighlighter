@@ -36,7 +36,7 @@ Qtlhighliter::Application.configure do
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.default_url_options = { :host => "qtlhighlighter.hmgc.mcw.edu" }
+  config.action_mailer.default_url_options = { :host => "server" }
 
   # Enable threaded mode
   # config.threadsafe!

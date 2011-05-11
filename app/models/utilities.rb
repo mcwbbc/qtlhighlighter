@@ -19,7 +19,7 @@ module Utilities
       end
     end
 
-  end
+  end #of ClassMethods
 
   module InstanceMethods
   end

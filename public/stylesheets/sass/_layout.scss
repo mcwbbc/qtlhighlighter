@@ -29,12 +29,13 @@ ul li {
   .ontology-key {
     border: none; } }
 
-.selected-terms, .selected-genes {
+
+.selected-terms {
   border: 1px solid #000;
   height: 200px;
   overflow: auto; }
 
-.selected-term, .selected-gene {
+.selected-term {
   font-size: 14px;
   border: 1px solid #000;
   margin: 2px;
@@ -45,10 +46,11 @@ ul li {
 .selected-term a {
   cursor: pointer; }
 
-.selected-gene {
-  background: $selected_gene_bg;
-  a {
-    cursor: pointer; }}
+.disease {
+  background: $disease_bg; }
+
+.evidence-code {
+  background: $evidence_code_bg; }
 
 .adult-mouse {
   background: $adult_mouse_bg; }
@@ -117,6 +119,7 @@ ul li {
   padding: 10px; }
 
 .row-header {
+  color: $row_header_fg;
   background-color: $row_header_bg;
   font-weight: bold; }
 
@@ -148,8 +151,7 @@ ul li {
   padding: 10px;
   margin-bottom: 20px;
   height: 30px;
-  font-size: 24px;
-}
+  font-size: 24px; }
 
 #qtl-chromosome-name, #qtl-starts-at, #qtl-ends-at, #qtl-symbol {
   padding-left: 5px;
@@ -161,21 +163,32 @@ ul li {
   margin-top: 10px;
   font-family: $droid_mono;
   height: 30px;
-  font-size: 24px;
-}
+  font-size: 24px; }
 
 .term-count, .gene-count {
   font-size: 12px;
   display: inline; }
 
-.messages{
-  border: 1px solid #000;
-  background: #fff;
-  overflow: auto;
-  height: 150px;
-  .message {
-    margin: 5px;
-    font-size: 18px; } }
-
 .newest {
   color: #d00; }
+
+.empty-marker, .has-terms, .has-pathways {
+  border: 1px solid $marker_border;
+  background: $empty_marker;
+  width: 20px;
+  height: 20px;
+  float: left;
+  margin-right: 5px;
+}
+
+.has-pathways {
+  background: $has_pathway_bg;
+}
+
+.has-terms {
+  background: $has_term_bg;
+}
+
+.gene-table {
+ width: 100%;
+}

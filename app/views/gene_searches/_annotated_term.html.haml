@@ -1,0 +1,11 @@
+%tr{:style => 'display: none;'}
+  %td
+  %td
+    %span{:title => pathway}
+      = gene_hash['pathways'][pathway]['pathway_name']
+  %td{:width => '15%'}
+    %span{:title => annotated_gene}
+      = gene_link_output(gene_hash['pathways'][pathway]['genes'][annotated_gene]['gene_name'])
+  %td{:class => Constants::TERM_CSS[gene_hash['pathways'][pathway]['genes'][annotated_gene]['terms'][annotated_term]['ontology']]}
+    %span{:title => annotated_term}
+      = gene_hash['pathways'][pathway]['genes'][annotated_gene]['terms'][annotated_term]['term_name']

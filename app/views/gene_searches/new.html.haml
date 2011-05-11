@@ -1,6 +1,6 @@
 - title t('.title')
 .grid-container
-  .grid_24
+  .grid_24.alpha.omega
     = page_title(t('.title'))
     .qtl-search
       %label{:for => 'qtl-search'}
@@ -15,6 +15,7 @@
       %label{:for => 'ontologyterm-search'}
         Add term:
       %input#ontologyterm-search{:size => 50}
+  .grid_24.alpha.omega
     .selected-terms-container
       Selected terms:
       .remove{:format => 'term'}
@@ -36,6 +37,10 @@
         cell
       .ontology-name.mamalian-phenotype
         mamalian phenotype
+      .ontology-name.evidence-code
+        evidence code
+      .ontology-name.disease
+        disease
       .clear
       .selected-terms.selected{:format => 'term'}
     .clear
@@ -44,3 +49,4 @@
     .clear
     %br
     .data-table
+.clear

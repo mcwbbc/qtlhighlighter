@@ -102,6 +102,8 @@ en:
       title: QTL Highlighter Help
     about:
       title: About the QTL Highlighter
+    downloads:
+      title: Downloads
 
   ie:
     upgrade_message: |
