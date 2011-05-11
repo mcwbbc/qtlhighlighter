@@ -4,6 +4,8 @@ doc/app
 doc/api
 .svn
 *~
+config/database.yml
+config/virtuoso.yml
 public/images/tmp/*
 log/*.log
 tmp/**/*
@@ -21,11 +23,6 @@ public/stylesheets/*.css
 config/settings.yml
 metadata
 
-config/deploy/*
-config/deploy.rb
-config/initializers/mail.rb
-config/database.yml
-config/virtuoso.yml
 
 .bundle
 vendor/bundle
